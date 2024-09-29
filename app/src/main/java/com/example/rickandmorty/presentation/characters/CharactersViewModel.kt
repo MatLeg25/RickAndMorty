@@ -41,8 +41,16 @@ class CharactersViewModel @Inject constructor(
         }
     }
 
-    fun onEvent() {
-
+    fun onEvent(event: CharactersScreenEvent) {
+        when (event) {
+            is CharactersScreenEvent.Refresh -> {}
+            is CharactersScreenEvent.FetchNextPage -> {}
+            is CharactersScreenEvent.ChangeScreenMode -> {
+                if (event.mode != state.value.screenMode) {
+                    _state.value = state.value.copy(screenMode = event.mode)
+                }
+            }
+        }
     }
 
 }
