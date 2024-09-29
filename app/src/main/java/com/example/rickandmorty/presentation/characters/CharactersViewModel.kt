@@ -17,17 +17,22 @@ class CharactersViewModel @Inject constructor(
     private var _state = mutableStateOf(CharactersScreenState())
     val state: State<CharactersScreenState> = _state
 
+    private var page: Int = 0
+
     init {
         fetchData()
     }
 
     fun fetchData() {
-        println(">>>> fetchData ")
         viewModelScope.launch {
-            getCharactersUseCase.invoke(1)
+            val nextPage = page + 1
+            println(">>>> fetchData, page=$nextPage ")
+            getCharactersUseCase.invoke(nextPage)
                 .onSuccess {
                     println(">>>>>>>>>>>> response OK= $it")
-                    _state.value = state.value.copy(characters = it) //todo set isMoreData
+                    _state.value =
+                        state.value.copy(characters = state.value.characters + it) //todo set isMoreData
+                    page = nextPage
                 }
                 .onFailure {
                     println(">>>>>>>>>>>> response NOK= ${it.message}")
