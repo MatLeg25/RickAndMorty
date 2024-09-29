@@ -1,11 +1,15 @@
 package com.example.rickandmorty.presentation.characters
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rickandmorty.Greeting
+import com.example.rickandmorty.presentation.compose.CharacterInfoItem
 
 @Composable
 fun CharactersScreen(
@@ -14,10 +18,15 @@ fun CharactersScreen(
     viewModel: CharactersViewModel = hiltViewModel()
 ) {
 
-    viewModel.fetchData()
+    val state = viewModel.state.value
 
-    Greeting(
-        name = "Android",
-        modifier = Modifier.padding(innerPadding)
-    )
+    LazyColumn(modifier = modifier.padding(innerPadding)) {
+        items(state.characters) {
+            CharacterInfoItem(
+                modifier = Modifier.fillMaxWidth(),
+                name = it.name,
+                avatarUrl = it.avatarUrl
+            )
+        }
+    }
 }
