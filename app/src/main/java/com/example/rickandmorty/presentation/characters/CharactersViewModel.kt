@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rickandmorty.domain.useCase.GetCharactersUseCase
-import com.example.rickandmorty.domain.useCase.favourites.DeleteFavouriteUseCase
 import com.example.rickandmorty.domain.useCase.favourites.FavouritesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -45,35 +44,32 @@ class CharactersViewModel @Inject constructor(
                 }
             }
 
-            is CharactersScreenEvent.AddFavourite -> {
+            is CharactersScreenEvent.AddDeleteFavourite -> {
                 viewModelScope.launch {
-                    favouritesUseCases.addFavouriteUseCase(event.character)
+                    if (event.character.isFavourite) {
+                        favouritesUseCases.deleteFavouriteUseCase(event.character)
+                    } else {
+                        favouritesUseCases.addFavouriteUseCase(event.character)
+                    }
                 }
             }
 
-            is CharactersScreenEvent.DeleteFavourite -> {
-                viewModelScope.launch {
-                    favouritesUseCases.deleteFavouriteUseCase(event.character)
-                }
-            }
         }
     }
 
     private suspend fun fetchAllCharacters() {
         val nextPage = page + 1
-        println(">>>> fetchData, page=$nextPage ")
         getCharactersUseCase.invoke(nextPage)
             .onSuccess {
-                println(">>>>>>>>>>>> response OK= $it")
                 _state.value =
                     state.value.copy(
-                        characters = state.value.characters + it,
+                        characters = state.value.characters + it.characters,
+                        isMoreData = it.totalPages == page,
                         isError = false
-                    ) //todo set isMoreData
+                    )
                 page = nextPage
             }
             .onFailure {
-                println(">>>>>>>>>>>> response NOK= ${it.message}")
                 _state.value = state.value.copy(isError = true)
             }
     }
@@ -82,13 +78,12 @@ class CharactersViewModel @Inject constructor(
         println(">>>> fetchFavouritesCharacters")
         favouritesUseCases.getFavouritesUseCase()
             .onSuccess {
-                println(">>>>>>>>>>>> response OK= $it")
                 _state.value =
                     state.value.copy(
                         favourites = it,
                         isMoreData = false,
                         isError = false
-                    ) //todo pagination
+                    )
             }
             .onFailure {
                 println(">>>>>>>>>>>> response NOK= ${it.message}")

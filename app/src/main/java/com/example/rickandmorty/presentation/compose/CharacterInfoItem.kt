@@ -1,11 +1,13 @@
 package com.example.rickandmorty.presentation.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,8 +24,11 @@ fun CharacterInfoItem(
     modifier: Modifier = Modifier,
     avatarUrl: String = "",
     name: String = "Name eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee eeeeeeeeeeeeeeeeeeeeeee",
-    isFavourite: Boolean = false //todo implement favourites
+    isFavourite: Boolean = false,
+    onFavoriteClick: () -> Unit = {}
 ) {
+    val favouriteImage = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -40,7 +45,10 @@ fun CharacterInfoItem(
             modifier = Modifier.weight(1f)
         )
         Image(
-            imageVector = Icons.Default.FavoriteBorder,
+            modifier = Modifier.clickable {
+                onFavoriteClick()
+            },
+            imageVector = favouriteImage,
             contentDescription = stringResource(id = R.string.favourite)
         )
     }

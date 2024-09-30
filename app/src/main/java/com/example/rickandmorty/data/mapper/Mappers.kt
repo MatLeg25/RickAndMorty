@@ -3,14 +3,18 @@ package com.example.rickandmorty.data.mapper
 import com.example.rickandmorty.data.local.CharacterEntity
 import com.example.rickandmorty.data.remote.dto.RickAndMortyResponse
 import com.example.rickandmorty.domain.model.Character
+import com.example.rickandmorty.domain.model.CharactersData
 
-fun RickAndMortyResponse.toDomainModel(): List<Character> =
-    this.results.map {
-        Character(id = it.id, name = it.name, avatarUrl = it.url)
-    }
+fun RickAndMortyResponse.toDomainModel(): CharactersData =
+    CharactersData(
+        totalPages = this.info.pages,
+        characters = this.results.map {
+            Character(id = it.id, name = it.name, avatarUrl = it.url, isFavourite = false)
+        }
+    )
 
 fun CharacterEntity.toDomainModel(): Character =
-    Character(id = this.id!!, name = this.name, avatarUrl = this.avatarUrl)
+    Character(id = this.id!!, name = this.name, avatarUrl = this.avatarUrl, isFavourite = false)
 
 fun Character.toEntity(): CharacterEntity =
     CharacterEntity(id = this.id, name = this.name, avatarUrl = this.avatarUrl)

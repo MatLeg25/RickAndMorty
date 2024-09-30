@@ -57,7 +57,11 @@ fun CharactersScreen(
             CharacterInfoItem(
                 modifier = Modifier.fillMaxWidth(),
                 name = it.name,
-                avatarUrl = it.avatarUrl
+                avatarUrl = it.avatarUrl,
+                isFavourite = it.isFavourite,
+                onFavoriteClick = {
+                    viewModel.onEvent(CharactersScreenEvent.AddDeleteFavourite(it))
+                }
             )
         }
         item { //todo validate pagination

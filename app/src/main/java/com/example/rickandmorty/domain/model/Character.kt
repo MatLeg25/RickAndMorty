@@ -3,5 +3,6 @@ package com.example.rickandmorty.domain.model
 data class Character(
     val id: Int,
     val name: String,
-    val avatarUrl: String
+    val avatarUrl: String,
+    val isFavourite: Boolean
 )

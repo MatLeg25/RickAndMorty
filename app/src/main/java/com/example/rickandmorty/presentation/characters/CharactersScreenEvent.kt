@@ -6,6 +6,5 @@ sealed class CharactersScreenEvent {
     data object Refresh: CharactersScreenEvent()
     data object FetchNextPage: CharactersScreenEvent()
     data class ChangeScreenMode(val mode: ScreenMode): CharactersScreenEvent()
-    data class AddFavourite(val character: Character): CharactersScreenEvent()
-    data class DeleteFavourite(val character: Character): CharactersScreenEvent()
+    data class AddDeleteFavourite(val character: Character): CharactersScreenEvent()
 }
