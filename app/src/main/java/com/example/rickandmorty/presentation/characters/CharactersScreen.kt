@@ -26,6 +26,7 @@ fun CharactersScreen(
 ) {
 
     val state = viewModel.state.value
+    val items = if (state.screenMode == ScreenMode.ALL) state.characters else state.favourites
 
     LazyColumn(modifier = modifier.padding(innerPadding)) {
         item {
@@ -53,7 +54,7 @@ fun CharactersScreen(
                 }
             }
         }
-        items(state.characters) {
+        items(items) {
             CharacterInfoItem(
                 modifier = Modifier.fillMaxWidth(),
                 name = it.name,

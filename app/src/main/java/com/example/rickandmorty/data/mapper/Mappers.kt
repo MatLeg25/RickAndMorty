@@ -14,7 +14,7 @@ fun RickAndMortyResponse.toDomainModel(): CharactersData =
     )
 
 fun CharacterEntity.toDomainModel(): Character =
-    Character(id = this.id!!, name = this.name, avatarUrl = this.avatarUrl, isFavourite = false)
+    Character(id = this.id!!, name = this.name, avatarUrl = this.avatarUrl, isFavourite = true)
 
 fun Character.toEntity(): CharacterEntity =
     CharacterEntity(id = this.id, name = this.name, avatarUrl = this.avatarUrl)

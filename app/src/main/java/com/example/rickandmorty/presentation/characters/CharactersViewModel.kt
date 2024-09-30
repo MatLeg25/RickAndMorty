@@ -40,7 +40,11 @@ class CharactersViewModel @Inject constructor(
             is CharactersScreenEvent.FetchNextPage -> {}
             is CharactersScreenEvent.ChangeScreenMode -> {
                 if (event.mode != state.value.screenMode) {
-                    _state.value = state.value.copy(screenMode = event.mode)
+                    viewModelScope.launch {
+                        //refresh Favourite list when user go to Favourite list
+                        if (event.mode == ScreenMode.FAVOURITES) fetchFavouritesCharacters()
+                        _state.value = state.value.copy(screenMode = event.mode)
+                    }
                 }
             }
 
