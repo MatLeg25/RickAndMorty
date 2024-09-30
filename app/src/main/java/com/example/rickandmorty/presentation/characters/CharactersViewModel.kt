@@ -41,7 +41,7 @@ class CharactersViewModel @Inject constructor(
             is CharactersScreenEvent.ChangeScreenMode -> {
                 if (event.mode != state.value.screenMode) {
                     viewModelScope.launch {
-                        //refresh Favourite list when user go to Favourite list
+                        //refresh Favourite list when user go to Favourite screen
                         if (event.mode == ScreenMode.FAVOURITES) fetchFavouritesCharacters()
                         _state.value = state.value.copy(screenMode = event.mode)
                     }
@@ -50,10 +50,23 @@ class CharactersViewModel @Inject constructor(
 
             is CharactersScreenEvent.AddDeleteFavourite -> {
                 viewModelScope.launch {
+                    val updatedCharacters = state.value.characters.toMutableList()
                     if (event.character.isFavourite) {
                         favouritesUseCases.deleteFavouriteUseCase(event.character)
                     } else {
                         favouritesUseCases.addFavouriteUseCase(event.character)
+                    }
+                    fetchFavouritesCharacters()
+                    //update item from all characters local list
+                    with(updatedCharacters) {
+                        indexOf(event.character).takeIf { it > -1 }?.let { idx ->
+                            removeAt(idx)
+                            add(
+                                idx,
+                                event.character.copy(isFavourite = !event.character.isFavourite)
+                            )
+                        }
+                        _state.value = state.value.copy(characters = this)
                     }
                 }
             }
