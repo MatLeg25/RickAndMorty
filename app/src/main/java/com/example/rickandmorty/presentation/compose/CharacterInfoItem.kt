@@ -19,13 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.rickandmorty.R
 
 @Composable
-@Preview
 fun CharacterInfoItem(
-    modifier: Modifier = Modifier,
-    avatarUrl: String = "",
-    name: String = "Name eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee eeeeeeeeeeeeeeeeeeeeeee",
-    isFavourite: Boolean = false,
-    onFavoriteClick: () -> Unit = {}
+    modifier: Modifier = Modifier, avatarUrl: String = "", //todo
+    name: String, isFavourite: Boolean, onFavoriteClick: () -> Unit
 ) {
     val favouriteImage = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
 
@@ -53,3 +49,11 @@ fun CharacterInfoItem(
         )
     }
 }
+
+@Composable
+@Preview
+private fun CharacterInfoItemPreview() = CharacterInfoItem(modifier = Modifier,
+    avatarUrl = "",
+    name = "Name eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee eeeeeeeeeeeeeeeeeeeeeee",
+    isFavourite = false,
+    onFavoriteClick = {})
