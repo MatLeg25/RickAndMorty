@@ -20,10 +20,8 @@ class CharactersViewModel @Inject constructor(
     val state: State<CharactersScreenState> = _state
 
     private var page: Int = 0
+    private var isLoading = false
 
-    init {
-        fetchData()
-    }
 
     fun fetchData() {
         viewModelScope.launch {
@@ -75,20 +73,25 @@ class CharactersViewModel @Inject constructor(
     }
 
     private suspend fun fetchAllCharacters() {
-        val nextPage = page + 1
-        getCharactersUseCase.invoke(nextPage)
-            .onSuccess {
-                _state.value =
-                    state.value.copy(
-                        characters = state.value.characters + it.characters,
-                        isMoreData = it.totalPages == page,
-                        isError = false
-                    )
-                page = nextPage
-            }
-            .onFailure {
-                _state.value = state.value.copy(isError = true)
-            }
+        if (!isLoading) {
+            if (!state.value.isMoreData) return
+            isLoading = true
+            val nextPage = page + 1
+            getCharactersUseCase.invoke(nextPage)
+                .onSuccess {
+                    _state.value =
+                        state.value.copy(
+                            characters = state.value.characters + it.characters,
+                            isMoreData = it.totalPages > nextPage,
+                            isError = false
+                        )
+                    page = nextPage
+                    isLoading = false
+                }
+                .onFailure {
+                    _state.value = state.value.copy(isError = true)
+                }
+        }
     }
 
     private suspend fun fetchFavouritesCharacters() {

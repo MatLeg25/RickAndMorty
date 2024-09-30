@@ -65,7 +65,7 @@ fun CharactersScreen(
                 }
             )
         }
-        item { //todo validate pagination
+        item {
             LoadMore(
                 isMoreData = state.isMoreData,
                 loadMoreFun = viewModel::fetchData
