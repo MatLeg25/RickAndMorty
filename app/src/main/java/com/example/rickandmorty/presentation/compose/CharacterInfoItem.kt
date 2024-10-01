@@ -13,6 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -87,15 +89,15 @@ fun CharacterInfoItem(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
         )
-        Image(
-            modifier = Modifier
-                .clickable {
-                    onFavoriteClick()
-                }
-                .testTag(stringResource(id = R.string.tag_add_delete_favourite)),
-            imageVector = favouriteImage,
-            contentDescription = stringResource(id = R.string.favourite),
-        )
+        IconButton(
+            modifier = Modifier.testTag(stringResource(id = R.string.tag_add_delete_favourite)),
+            onClick = { onFavoriteClick() }
+        ) {
+            Icon(
+                imageVector = favouriteImage,
+                contentDescription = stringResource(id = R.string.favourite),
+            )
+        }
     }
 }
 
