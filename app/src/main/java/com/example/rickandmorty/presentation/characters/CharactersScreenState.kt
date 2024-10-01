@@ -6,6 +6,7 @@ data class CharactersScreenState(
     val screenMode: ScreenMode = ScreenMode.ALL,
     val characters: List<Character> = emptyList(),
     val favourites: List<Character> = emptyList(),
+    val isLoading: Boolean = false,
     val isMoreData: Boolean = true,
     val isError: Boolean = false,
 )

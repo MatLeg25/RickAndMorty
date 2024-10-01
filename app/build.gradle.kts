@@ -73,6 +73,10 @@ dependencies {
     //Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
 
+    //PullRefreshIndicator
+    implementation ("androidx.compose.material:material:1.7.2")
+
+
     implementation(libs.androidx.ui.text.google.fonts)
 
     implementation(libs.androidx.core.ktx)

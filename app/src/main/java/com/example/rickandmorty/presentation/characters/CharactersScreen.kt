@@ -10,7 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -20,6 +26,7 @@ import com.example.rickandmorty.presentation.compose.ChangeScreenModeBtn
 import com.example.rickandmorty.presentation.compose.CharacterInfoItem
 import com.example.rickandmorty.presentation.compose.LoadMore
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CharactersScreen(
     modifier: Modifier = Modifier,
@@ -30,6 +37,10 @@ fun CharactersScreen(
     val context = LocalContext.current
     val state = viewModel.state.value
     val items = if (state.screenMode == ScreenMode.ALL) state.characters else state.favourites
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = state.isLoading,
+        onRefresh = { viewModel.onEvent(CharactersScreenEvent.Refresh) }
+    )
 
     //todo update UI to inform user about error
     if (state.isError) {
@@ -41,6 +52,7 @@ fun CharactersScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
+            .pullRefresh(pullRefreshState)
     ) {
         Row(
             modifier = Modifier
@@ -74,6 +86,13 @@ fun CharactersScreen(
             )
         }
 
+        PullRefreshIndicator(
+            refreshing = state.isLoading,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            backgroundColor = if (state.isLoading) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.primaryContainer,
+        )
+
         LazyColumn(modifier = Modifier) {
             items(items) {
                 CharacterInfoItem(
@@ -89,10 +108,11 @@ fun CharactersScreen(
             item {
                 LoadMore(
                     isMoreData = state.isMoreData,
-                    loadMoreFun = viewModel::fetchData
+                    loadMoreFun = { viewModel.onEvent(CharactersScreenEvent.FetchNextPage) }
                 )
             }
         }
+
     }
 
 

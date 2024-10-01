@@ -20,10 +20,10 @@ class CharactersViewModel @Inject constructor(
     val state: State<CharactersScreenState> = _state
 
     private var page: Int = 0
-    private var isLoading = false
 
 
-    fun fetchData() {
+    private fun fetchData() {
+        println(">>>> fetchData for ${state.value.screenMode}")
         viewModelScope.launch {
             when (state.value.screenMode) {
                 ScreenMode.ALL -> fetchAllCharacters()
@@ -34,8 +34,15 @@ class CharactersViewModel @Inject constructor(
 
     fun onEvent(event: CharactersScreenEvent) {
         when (event) {
-            is CharactersScreenEvent.Refresh -> {} //todo pull refresh
-            is CharactersScreenEvent.FetchNextPage -> {}
+            is CharactersScreenEvent.Refresh -> {
+                resetScreenState()
+                fetchData()
+            }
+
+            is CharactersScreenEvent.FetchNextPage -> {
+                fetchData()
+            }
+
             is CharactersScreenEvent.ChangeScreenMode -> {
                 if (event.mode != state.value.screenMode) {
                     viewModelScope.launch {
@@ -73,9 +80,9 @@ class CharactersViewModel @Inject constructor(
     }
 
     private suspend fun fetchAllCharacters() {
-        if (!isLoading) {
+        if (!state.value.isLoading) {
             if (!state.value.isMoreData) return
-            isLoading = true
+            _state.value = state.value.copy(isLoading = true)
             val nextPage = page + 1
             getCharactersUseCase.invoke(nextPage)
                 .onSuccess {
@@ -86,16 +93,15 @@ class CharactersViewModel @Inject constructor(
                             isError = false
                         )
                     page = nextPage
-                    isLoading = false
+                    _state.value = state.value.copy(isLoading = false)
                 }
                 .onFailure {
-                    _state.value = state.value.copy(isError = true)
+                    _state.value = state.value.copy(isError = true, isLoading = false)
                 }
         }
     }
 
     private suspend fun fetchFavouritesCharacters() {
-        println(">>>> fetchFavouritesCharacters")
         favouritesUseCases.getFavouritesUseCase()
             .onSuccess {
                 _state.value =
@@ -106,9 +112,26 @@ class CharactersViewModel @Inject constructor(
                     )
             }
             .onFailure {
-                println(">>>>>>>>>>>> response NOK= ${it.message}")
                 _state.value = state.value.copy(isError = true)
             }
+    }
+
+    private fun resetScreenState() {
+        page = 0
+        with(state.value) {
+            _state.value = when (screenMode) {
+                ScreenMode.ALL -> CharactersScreenState(
+                    screenMode = screenMode,
+                    favourites = favourites
+                )
+
+                ScreenMode.FAVOURITES -> CharactersScreenState(
+                    screenMode = screenMode,
+                    characters = favourites
+                )
+            }
+        }
+
     }
 
 }
