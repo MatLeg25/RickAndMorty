@@ -9,7 +9,7 @@ fun RickAndMortyResponse.toDomainModel(): CharactersData =
     CharactersData(
         totalPages = this.info.pages,
         characters = this.results.map {
-            Character(id = it.id, name = it.name, avatarUrl = it.url, isFavourite = false)
+            Character(id = it.id, name = it.name, avatarUrl = it.image, isFavourite = false)
         }
     )
 
