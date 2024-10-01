@@ -1,5 +1,6 @@
 package com.example.rickandmorty.presentation.characters
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rickandmorty.R
@@ -25,8 +27,15 @@ fun CharactersScreen(
     viewModel: CharactersViewModel = hiltViewModel()
 ) {
 
+    val context = LocalContext.current
     val state = viewModel.state.value
     val items = if (state.screenMode == ScreenMode.ALL) state.characters else state.favourites
+
+    //todo update UI to inform user about error
+    if (state.isError) {
+        Toast.makeText(context, R.string.cannot_fetch_resource_try_again_later, Toast.LENGTH_LONG)
+            .show()
+    }
 
     Column(
         modifier = Modifier
@@ -34,7 +43,9 @@ fun CharactersScreen(
             .padding(innerPadding)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             ChangeScreenModeBtn(
