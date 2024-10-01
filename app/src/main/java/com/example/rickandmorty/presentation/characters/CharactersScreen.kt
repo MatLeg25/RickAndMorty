@@ -38,7 +38,7 @@ fun CharactersScreen(
     val state = viewModel.state.value
     val items = if (state.screenMode == ScreenMode.ALL) state.characters else state.favourites
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = state.isLoading,
+        refreshing = state.isRefreshing,
         onRefresh = { viewModel.onEvent(CharactersScreenEvent.Refresh) }
     )
 
@@ -86,11 +86,12 @@ fun CharactersScreen(
             )
         }
 
+        //todo fix PullRefresh bug for empty screen
         PullRefreshIndicator(
-            refreshing = state.isLoading,
+            refreshing = state.isRefreshing,
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            backgroundColor = if (state.isLoading) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.primaryContainer,
+            backgroundColor = if (state.isRefreshing) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.primaryContainer,
         )
 
         LazyColumn(modifier = Modifier) {

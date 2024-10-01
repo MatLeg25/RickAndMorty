@@ -20,23 +20,26 @@ class CharactersViewModel @Inject constructor(
     val state: State<CharactersScreenState> = _state
 
     private var page: Int = 0
+    private var isLoading: Boolean = false
 
-
-    private fun fetchData() {
+    private fun fetchData(callback: () -> Unit = {}) {
         println(">>>> fetchData for ${state.value.screenMode}")
         viewModelScope.launch {
             when (state.value.screenMode) {
                 ScreenMode.ALL -> fetchAllCharacters()
                 ScreenMode.FAVOURITES -> fetchFavouritesCharacters()
             }
+            callback()
         }
     }
 
     fun onEvent(event: CharactersScreenEvent) {
         when (event) {
             is CharactersScreenEvent.Refresh -> {
-                resetScreenState()
-                fetchData()
+                resetScreenState(state.value.copy(isRefreshing = true))
+                fetchData() {
+                     _state.value = state.value.copy(isRefreshing = false)
+                }
             }
 
             is CharactersScreenEvent.FetchNextPage -> {
@@ -48,7 +51,7 @@ class CharactersViewModel @Inject constructor(
                     viewModelScope.launch {
                         //refresh Favourite list when user go to Favourite screen
                         if (event.mode == ScreenMode.FAVOURITES) fetchFavouritesCharacters()
-                        _state.value = state.value.copy(screenMode = event.mode)
+                        _state.value = state.value.copy(screenMode = event.mode, isRefreshing = false)
                     }
                 }
             }
@@ -80,9 +83,9 @@ class CharactersViewModel @Inject constructor(
     }
 
     private suspend fun fetchAllCharacters() {
-        if (!state.value.isLoading) {
+        if (!isLoading) {
             if (!state.value.isMoreData) return
-            _state.value = state.value.copy(isLoading = true)
+            isLoading = true
             val nextPage = page + 1
             getCharactersUseCase.invoke(nextPage)
                 .onSuccess {
@@ -93,10 +96,11 @@ class CharactersViewModel @Inject constructor(
                             isError = false
                         )
                     page = nextPage
-                    _state.value = state.value.copy(isLoading = false)
+                    isLoading = false
                 }
                 .onFailure {
-                    _state.value = state.value.copy(isError = true, isLoading = false)
+                    isLoading = false
+                    _state.value = state.value.copy(isError = true)
                 }
         }
     }
@@ -116,18 +120,18 @@ class CharactersViewModel @Inject constructor(
             }
     }
 
-    private fun resetScreenState() {
+    private fun resetScreenState(state: CharactersScreenState) {
         page = 0
-        with(state.value) {
+        with(state) {
             _state.value = when (screenMode) {
-                ScreenMode.ALL -> CharactersScreenState(
+                ScreenMode.ALL -> state.copy(
                     screenMode = screenMode,
-                    favourites = favourites
+                    favourites = favourites,
                 )
 
-                ScreenMode.FAVOURITES -> CharactersScreenState(
+                ScreenMode.FAVOURITES -> state.copy(
                     screenMode = screenMode,
-                    characters = favourites
+                    characters = characters,
                 )
             }
         }
