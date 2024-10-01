@@ -3,4 +3,8 @@
     <string name="character_avatar">Character avatar</string>
     <string name="favourite">Favourite</string>
     <string name="all">All</string>
+
+<!--    USED IN TESTS-->
+    <string name="tag_has_border">has_border</string>
+    <string name="tag_add_delete_favourite">add_delete_favourite</string>
 </resources>

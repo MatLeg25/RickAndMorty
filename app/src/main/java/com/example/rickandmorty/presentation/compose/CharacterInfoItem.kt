@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -87,11 +88,13 @@ fun CharacterInfoItem(
             modifier = Modifier.weight(1f)
         )
         Image(
-            modifier = Modifier.clickable {
-                onFavoriteClick()
-            },
+            modifier = Modifier
+                .clickable {
+                    onFavoriteClick()
+                }
+                .testTag(stringResource(id = R.string.tag_add_delete_favourite)),
             imageVector = favouriteImage,
-            contentDescription = stringResource(id = R.string.favourite)
+            contentDescription = stringResource(id = R.string.favourite),
         )
     }
 }
