@@ -2,6 +2,8 @@
     <string name="app_name">RickAndMorty</string>
     <string name="character_avatar">Character avatar</string>
     <string name="favourite">Favourite</string>
+    <string name="add_favourite">Add to favourites</string>
+    <string name="delete_favourite">Delete from favourites</string>
     <string name="all">All</string>
     <string name="cannot_fetch_resource_try_again_later">Cannot fetch resource. Please try again later.</string>
 

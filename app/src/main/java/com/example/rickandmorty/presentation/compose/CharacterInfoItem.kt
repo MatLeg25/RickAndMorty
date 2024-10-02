@@ -45,6 +45,8 @@ fun CharacterInfoItem(
     onFavoriteClick: () -> Unit
 ) {
     val favouriteImage = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
+    val contentDescription =
+        stringResource(id = if (isFavourite) R.string.delete_favourite else R.string.add_favourite)
     val listColors =
         listOf(MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.secondaryContainer)
     val customBrush = remember {
@@ -95,7 +97,7 @@ fun CharacterInfoItem(
         ) {
             Icon(
                 imageVector = favouriteImage,
-                contentDescription = stringResource(id = R.string.favourite),
+                contentDescription = contentDescription,
             )
         }
     }
