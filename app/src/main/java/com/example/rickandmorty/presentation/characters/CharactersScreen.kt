@@ -30,7 +30,6 @@ import com.example.rickandmorty.presentation.compose.LoadMore
 @Composable
 fun CharactersScreen(
     modifier: Modifier = Modifier,
-    innerPadding: PaddingValues,
     viewModel: CharactersViewModel = hiltViewModel()
 ) {
 
@@ -49,9 +48,8 @@ fun CharactersScreen(
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(innerPadding)
             .pullRefresh(pullRefreshState)
     ) {
         Row(
