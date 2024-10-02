@@ -11,6 +11,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import com.example.rickandmorty.data.repository.RickAndMortyRepositoryFake
+import com.example.rickandmorty.presentation.characters.CharactersScreen
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +29,7 @@ class AddDeleteFavouriteCharacterE2E {
 
         composeRule.activity.setContent {
             RickAndMortyTheme {
-
+                CharactersScreen()
             }
         }
     }
