@@ -8,4 +8,5 @@
 <!--    USED IN TESTS-->
     <string name="tag_has_border">has_border</string>
     <string name="tag_add_delete_favourite">add_delete_favourite</string>
+    <string name="tag_lazy_list">lazy_list</string>
 </resources>

@@ -18,6 +18,7 @@ class RickAndMortyRepositoryFake : RickAndMortyRepository {
 
 
     override suspend fun getCharacters(page: Int): Result<CharactersData> {
+        println(">>>>>getCharacters = $characters ")
         return if (shouldReturnError) {
             Result.failure(Throwable())
         } else {

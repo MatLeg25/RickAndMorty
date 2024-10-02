@@ -19,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rickandmorty.R
@@ -92,7 +94,7 @@ fun CharactersScreen(
             backgroundColor = if (state.isRefreshing) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.primaryContainer,
         )
 
-        LazyColumn(modifier = Modifier) {
+        LazyColumn(modifier = Modifier.testTag(stringResource(id = R.string.tag_lazy_list))) {
             items(items) {
                 CharacterInfoItem(
                     modifier = Modifier.fillMaxWidth(),
