@@ -18,14 +18,13 @@ class RickAndMortyRepositoryFake : RickAndMortyRepository {
 
 
     override suspend fun getCharacters(page: Int): Result<CharactersData> {
-        println(">>>>>getCharacters = $characters ")
         return if (shouldReturnError) {
             Result.failure(Throwable())
         } else {
             Result.success(
                 CharactersData(
                     totalPages = totalPages,
-                    characters = characters //todo pagination .subList(page - 1, page)
+                    characters = characters
                 )
             )
         }
@@ -36,14 +35,17 @@ class RickAndMortyRepositoryFake : RickAndMortyRepository {
     }
 
     override suspend fun addToFavourites(character: Character) {
+
         synchronized(lock) {
-            favourites = favourites + character
+            favourites = favourites + character.copy(isFavourite = true)
+            println(">>>>>addToFavourites $favourites")
         }
     }
 
     override suspend fun removeFromFavourites(character: Character) {
         synchronized(lock) {
             favourites = favourites.filterNot { it.id == character.id }
+            println(">>>>>removeFromFavourites $favourites")
         }
     }
 
