@@ -2,6 +2,8 @@ package com.example.rickandmorty.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.example.rickandmorty.R
@@ -24,6 +26,10 @@ val displayFontFamily = FontFamily(
         googleFont = GoogleFont("Patrick Hand"),
         fontProvider = provider,
     )
+)
+
+val rickAndMortyFont = FontFamily(
+    androidx.compose.ui.text.font.Font(R.font.rick_and_morty, FontWeight.Normal, FontStyle.Normal)
 )
 
 // Default Material 3 typography values

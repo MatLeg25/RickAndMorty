@@ -22,7 +22,6 @@ fun ChangeScreenModeBtn(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-//todo update style
     Button(
         modifier = if (isSelected) modifier
             .border(4.dp, MaterialTheme.colorScheme.primaryContainer, RectangleShape)

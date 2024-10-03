@@ -2,6 +2,7 @@ package com.example.rickandmorty.presentation.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -28,11 +29,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.rickandmorty.R
+import com.example.rickandmorty.ui.theme.rickAndMortyFont
 
 @Composable
 fun CharacterInfoItem(
@@ -46,7 +50,7 @@ fun CharacterInfoItem(
     val contentDescription =
         stringResource(id = if (isFavourite) R.string.delete_favourite else R.string.add_favourite)
     val listColors =
-        listOf(MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.secondaryContainer)
+        listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.inversePrimary)
     val customBrush = remember {
         Brush.linearGradient(
             colors = listColors,
@@ -83,12 +87,24 @@ fun CharacterInfoItem(
             error = painterResource(R.drawable.ic_launcher_background)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = name,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                text = name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                fontFamily = rickAndMortyFont
+            )
+            Text(
+                text = name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+            )
+        }
         IconButton(
             modifier = Modifier.testTag(stringResource(id = R.string.tag_add_delete_favourite)),
             onClick = { onFavoriteClick() }
