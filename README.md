@@ -1,5 +1,6 @@
 # RickAndMorty
 ![image](https://github.com/user-attachments/assets/1ec9ef64-e87e-48bf-9b78-8495348714db)
+![image](https://github.com/user-attachments/assets/f6f12a48-6d75-43d7-bab7-2ceadbd68b1c)
 
 ## Getting Started
 1. Clone repository.
