@@ -89,7 +89,9 @@ fun CharactersScreen(
             LazyColumn(modifier = Modifier.testTag(stringResource(id = R.string.tag_lazy_list))) {
                 items(items) {
                     CharacterInfoItem(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag(it.name),
                         name = it.name,
                         avatarUrl = it.avatarUrl,
                         isFavourite = it.isFavourite,
