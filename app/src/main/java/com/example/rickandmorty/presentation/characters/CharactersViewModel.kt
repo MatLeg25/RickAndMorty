@@ -25,7 +25,6 @@ class CharactersViewModel @Inject constructor(
 
 
     private fun fetchData(callback: () -> Unit = {}) {
-        println(">>>> fetchData for ${state.value.screenMode}")
         viewModelScope.launch {
             when (state.value.screenMode) {
                 ScreenMode.ALL -> fetchAllCharacters()
@@ -99,14 +98,14 @@ class CharactersViewModel @Inject constructor(
                 isLoading = false
             }.onFailure {
                 isLoading = false
-                _state.value = state.value.copy(isError = true)
+                resetScreenState(state.value.copy(isError = true))
             }
         }
     }
 
     private suspend fun fetchFavouritesCharacters() {
         favouritesUseCases.getFavouritesUseCase().catch {
-            _state.value = state.value.copy(isError = true)
+            resetScreenState(state.value.copy(isError = true))
         }.collect { result ->
             _state.value = state.value.copy(
                 favourites = result, isError = false, isMoreDataFav = false, isRefreshing = false
