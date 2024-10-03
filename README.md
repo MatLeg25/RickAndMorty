@@ -11,7 +11,7 @@
 - pull to refresh
 - pagination triggered by scroll
 - dark mode
-- test case: E2E for add/delete character to/from local DB
+- test case: E2E for add/delete character to/from favourites
 
 ## Getting Started
 1. Clone repository.
