@@ -109,7 +109,7 @@ class CharactersViewModel @Inject constructor(
             _state.value = state.value.copy(isError = true)
         }.collect { result ->
             _state.value = state.value.copy(
-                favourites = result, isError = false, isMoreDataFav = false
+                favourites = result, isError = false, isMoreDataFav = false, isRefreshing = false
             )
         }
     }
