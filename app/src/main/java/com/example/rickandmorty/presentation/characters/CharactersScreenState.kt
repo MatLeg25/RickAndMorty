@@ -7,6 +7,11 @@ data class CharactersScreenState(
     val characters: List<Character> = emptyList(),
     val favourites: List<Character> = emptyList(),
     val isRefreshing: Boolean = false,
-    val isMoreData: Boolean = true,
+    val isMoreDataAll: Boolean = true,
+    val isMoreDataFav: Boolean = true,
     val isError: Boolean = false,
-)
+) {
+    fun isMoreData(): Boolean {
+        return if (screenMode == ScreenMode.ALL) isMoreDataAll else isMoreDataFav
+    }
+}

@@ -100,8 +100,10 @@ fun CharactersScreen(
                         })
                 }
                 item {
-                    LoadMore(isMoreData = state.isMoreData,
-                        loadMoreFun = { viewModel.onEvent(CharactersScreenEvent.FetchNextPage) })
+                    LoadMore(
+                        isMoreData = state.isMoreData(),
+                        loadMoreFun = { viewModel.onEvent(CharactersScreenEvent.FetchNextPage) }
+                    )
                 }
                 if (items.size < 5) {
                     item {
