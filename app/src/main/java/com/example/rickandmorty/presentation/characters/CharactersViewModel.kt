@@ -38,7 +38,7 @@ class CharactersViewModel @Inject constructor(
             is CharactersScreenEvent.Refresh -> {
                 resetScreenState(state.value.copy(isRefreshing = true))
                 fetchData() {
-                     _state.value = state.value.copy(isRefreshing = false)
+                    _state.value = state.value.copy(isRefreshing = false)
                 }
             }
 
@@ -51,7 +51,8 @@ class CharactersViewModel @Inject constructor(
                     viewModelScope.launch {
                         //refresh Favourite list when user go to Favourite screen
                         if (event.mode == ScreenMode.FAVOURITES) fetchFavouritesCharacters()
-                        _state.value = state.value.copy(screenMode = event.mode, isRefreshing = false)
+                        _state.value =
+                            state.value.copy(screenMode = event.mode, isRefreshing = false)
                     }
                 }
             }
@@ -125,11 +126,13 @@ class CharactersViewModel @Inject constructor(
         with(state) {
             _state.value = when (screenMode) {
                 ScreenMode.ALL -> state.copy(
+                    isMoreData = true,
                     screenMode = screenMode,
                     favourites = favourites,
                 )
 
                 ScreenMode.FAVOURITES -> state.copy(
+                    isMoreData = true,
                     screenMode = screenMode,
                     characters = characters,
                 )
