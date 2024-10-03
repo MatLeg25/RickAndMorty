@@ -3,7 +3,6 @@ package com.example.rickandmorty.presentation.characters
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -97,7 +96,9 @@ fun CharactersScreen(
         LazyColumn(modifier = Modifier.testTag(stringResource(id = R.string.tag_lazy_list))) {
             items(items) {
                 CharacterInfoItem(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(it.name),
                     name = it.name,
                     avatarUrl = it.avatarUrl,
                     isFavourite = it.isFavourite,
