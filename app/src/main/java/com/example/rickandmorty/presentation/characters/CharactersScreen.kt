@@ -2,6 +2,7 @@ package com.example.rickandmorty.presentation.characters
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,17 +31,14 @@ import com.example.rickandmorty.presentation.compose.LoadMore
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CharactersScreen(
-    modifier: Modifier = Modifier,
-    viewModel: CharactersViewModel = hiltViewModel()
+    modifier: Modifier = Modifier, viewModel: CharactersViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
     val state = viewModel.state.value
     val items = if (state.screenMode == ScreenMode.ALL) state.characters else state.favourites
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = state.isRefreshing,
-        onRefresh = { viewModel.onEvent(CharactersScreenEvent.Refresh) }
-    )
+    val pullRefreshState = rememberPullRefreshState(refreshing = state.isRefreshing,
+        onRefresh = { viewModel.onEvent(CharactersScreenEvent.Refresh) })
 
     //todo update UI to inform user about error
     if (state.isError) {
@@ -49,9 +47,7 @@ fun CharactersScreen(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .pullRefresh(pullRefreshState)
+        modifier = modifier.fillMaxSize()
     ) {
         Row(
             modifier = Modifier
@@ -85,34 +81,46 @@ fun CharactersScreen(
             )
         }
 
-        //todo fix PullRefresh bug for empty screen
-        PullRefreshIndicator(
-            refreshing = state.isRefreshing,
-            state = pullRefreshState,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            backgroundColor = if (state.isRefreshing) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.primaryContainer,
-        )
-
-        LazyColumn(modifier = Modifier.testTag(stringResource(id = R.string.tag_lazy_list))) {
-            items(items) {
-                CharacterInfoItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag(it.name),
-                    name = it.name,
-                    avatarUrl = it.avatarUrl,
-                    isFavourite = it.isFavourite,
-                    onFavoriteClick = {
-                        viewModel.onEvent(CharactersScreenEvent.AddDeleteFavourite(it))
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState)
+        ) {
+            LazyColumn(modifier = Modifier.testTag(stringResource(id = R.string.tag_lazy_list))) {
+                items(items) {
+                    CharacterInfoItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        name = it.name,
+                        avatarUrl = it.avatarUrl,
+                        isFavourite = it.isFavourite,
+                        onFavoriteClick = {
+                            viewModel.onEvent(CharactersScreenEvent.AddDeleteFavourite(it))
+                        })
+                }
+                item {
+                    LoadMore(isMoreData = state.isMoreData,
+                        loadMoreFun = { viewModel.onEvent(CharactersScreenEvent.FetchNextPage) })
+                }
+                if (items.size < 5) {
+                    item {
+                        //add box to fix issues with pullRefresh for empty/single items screen
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillParentMaxHeight(fraction = 0.5f)
+                        )
                     }
-                )
+                }
+
             }
-            item {
-                LoadMore(
-                    isMoreData = state.isMoreData,
-                    loadMoreFun = { viewModel.onEvent(CharactersScreenEvent.FetchNextPage) }
-                )
-            }
+
+            PullRefreshIndicator(
+                refreshing = state.isRefreshing,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                backgroundColor = if (state.isRefreshing) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.primaryContainer,
+            )
+
         }
 
     }
