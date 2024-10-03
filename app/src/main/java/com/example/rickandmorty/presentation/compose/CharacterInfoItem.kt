@@ -98,7 +98,7 @@ fun CharacterInfoItem(
                 fontFamily = rickAndMortyFont
             )
             Text(
-                text = name,
+                text = "[$name]",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold,
