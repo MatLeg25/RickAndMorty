@@ -3,6 +3,9 @@ package com.example.rickandmorty.data.repository
 import com.example.rickandmorty.domain.model.Character
 import com.example.rickandmorty.domain.model.CharactersData
 import com.example.rickandmorty.domain.repository.RickAndMortyRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class RickAndMortyRepositoryFake(characterNamePrefix: String) : RickAndMortyRepository {
 
@@ -15,11 +18,12 @@ class RickAndMortyRepositoryFake(characterNamePrefix: String) : RickAndMortyRepo
 
     private val perPage = Config.PER_PAGE
     private val totalPages = Config.TOTAL_PAGES
-    private val lock = Any()
 
-    private var favourites = emptyList<Character>()
     lateinit var characters: List<Character>
         private set
+
+    private val _favourites = MutableStateFlow<List<Character>>(emptyList())
+    val favouritesFlow: StateFlow<List<Character>> = _favourites
 
 
     init {
@@ -51,22 +55,19 @@ class RickAndMortyRepositoryFake(characterNamePrefix: String) : RickAndMortyRepo
     }
 
     override suspend fun getFavourites(): Result<List<Character>> {
-        return Result.success(favourites)
+        return Result.success(favouritesFlow.value)
+    }
+
+    override fun getFavouritesFlow(): Flow<List<Character>> {
+        return favouritesFlow
     }
 
     override suspend fun addToFavourites(character: Character) {
-
-        synchronized(lock) {
-            favourites = favourites + character.copy(isFavourite = true)
-            println(">>>>>addToFavourites $favourites")
-        }
+        _favourites.value += character.copy(isFavourite = true)
     }
 
     override suspend fun removeFromFavourites(character: Character) {
-        synchronized(lock) {
-            favourites = favourites.filterNot { it.id == character.id }
-            println(">>>>>removeFromFavourites $favourites")
-        }
+        _favourites.value = _favourites.value.filterNot { it.id == character.id }
     }
 
 }

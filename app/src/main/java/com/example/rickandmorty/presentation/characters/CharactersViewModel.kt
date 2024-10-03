@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rickandmorty.domain.useCase.GetCharactersUseCase
 import com.example.rickandmorty.domain.useCase.favourites.FavouritesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,6 +22,7 @@ class CharactersViewModel @Inject constructor(
 
     private var page: Int = 0
     private var isLoading: Boolean = false
+
 
     private fun fetchData(callback: () -> Unit = {}) {
         println(">>>> fetchData for ${state.value.screenMode}")
@@ -49,10 +51,10 @@ class CharactersViewModel @Inject constructor(
             is CharactersScreenEvent.ChangeScreenMode -> {
                 if (event.mode != state.value.screenMode) {
                     viewModelScope.launch {
-                        //refresh Favourite list when user go to Favourite screen
-                        if (event.mode == ScreenMode.FAVOURITES) fetchFavouritesCharacters()
-                        _state.value =
-                            state.value.copy(screenMode = event.mode, isRefreshing = false)
+                        _state.value = state.value.copy(
+                            screenMode = event.mode,
+                            isRefreshing = false
+                        )
                     }
                 }
             }
@@ -65,7 +67,6 @@ class CharactersViewModel @Inject constructor(
                     } else {
                         favouritesUseCases.addFavouriteUseCase(event.character)
                     }
-                    fetchFavouritesCharacters()
                     //update item from all characters local list
                     with(updatedCharacters) {
                         indexOf(event.character).takeIf { it > -1 }?.let { idx ->
@@ -85,40 +86,32 @@ class CharactersViewModel @Inject constructor(
 
     private suspend fun fetchAllCharacters() {
         if (!isLoading) {
-            if (!state.value.isMoreData) return
+            if (!state.value.isMoreDataAll) return
             isLoading = true
             val nextPage = page + 1
-            getCharactersUseCase.invoke(nextPage)
-                .onSuccess {
-                    _state.value =
-                        state.value.copy(
-                            characters = state.value.characters + it.characters,
-                            isMoreData = it.totalPages > nextPage,
-                            isError = false
-                        )
-                    page = nextPage
-                    isLoading = false
-                }
-                .onFailure {
-                    isLoading = false
-                    _state.value = state.value.copy(isError = true)
-                }
+            getCharactersUseCase.invoke(nextPage).onSuccess {
+                _state.value = state.value.copy(
+                    characters = state.value.characters + it.characters,
+                    isMoreDataAll = it.totalPages > nextPage,
+                    isError = false
+                )
+                page = nextPage
+                isLoading = false
+            }.onFailure {
+                isLoading = false
+                _state.value = state.value.copy(isError = true)
+            }
         }
     }
 
     private suspend fun fetchFavouritesCharacters() {
-        favouritesUseCases.getFavouritesUseCase()
-            .onSuccess {
-                _state.value =
-                    state.value.copy(
-                        favourites = it,
-                        isMoreData = false,
-                        isError = false
-                    )
-            }
-            .onFailure {
-                _state.value = state.value.copy(isError = true)
-            }
+        favouritesUseCases.getFavouritesUseCase().catch {
+            _state.value = state.value.copy(isError = true)
+        }.collect { result ->
+            _state.value = state.value.copy(
+                favourites = result, isError = false, isMoreDataFav = false
+            )
+        }
     }
 
     private fun resetScreenState(state: CharactersScreenState) {
@@ -126,15 +119,17 @@ class CharactersViewModel @Inject constructor(
         with(state) {
             _state.value = when (screenMode) {
                 ScreenMode.ALL -> state.copy(
-                    isMoreData = true,
+                    isMoreDataAll = true,
                     screenMode = screenMode,
                     favourites = favourites,
+                    characters = emptyList()
                 )
 
                 ScreenMode.FAVOURITES -> state.copy(
-                    isMoreData = true,
+                    isMoreDataFav = true,
                     screenMode = screenMode,
                     characters = characters,
+                    favourites = emptyList()
                 )
             }
         }

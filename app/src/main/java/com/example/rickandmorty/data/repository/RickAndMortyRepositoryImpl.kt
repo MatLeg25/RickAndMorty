@@ -1,12 +1,14 @@
 package com.example.rickandmorty.data.repository
 
 import com.example.rickandmorty.data.local.RickAndMortyDatabase
+import com.example.rickandmorty.data.mapper.mapToDomainModelFlow
 import com.example.rickandmorty.data.mapper.toDomainModel
 import com.example.rickandmorty.data.mapper.toEntity
 import com.example.rickandmorty.data.remote.RickAndMortyApi
 import com.example.rickandmorty.domain.model.Character
 import com.example.rickandmorty.domain.model.CharactersData
 import com.example.rickandmorty.domain.repository.RickAndMortyRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,7 +30,6 @@ class RickAndMortyRepositoryImpl @Inject constructor(
         }
     }
 
-    //todo pagination
     override suspend fun getFavourites(): Result<List<Character>> {
         return try {
             val data = dao.getAllCharacters().take(1000).map { it.toDomainModel() }
@@ -36,6 +37,11 @@ class RickAndMortyRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    //todo consider pagination
+    override fun getFavouritesFlow(): Flow<List<Character>> {
+        return dao.getAllCharactersFlow().mapToDomainModelFlow()
     }
 
     override suspend fun addToFavourites(character: Character) {
