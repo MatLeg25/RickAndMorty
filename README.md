@@ -19,7 +19,7 @@
 3. Build with Gradle.
    
 ## Tech stack:
-- Android
+- Android, Jetpack Compose
 - Kotlin, Coroutines, Flow
 - MVVM, DI with Dagger-Hilt
 - RoomDB, Coil
