@@ -29,3 +29,4 @@
  - Theme generated with: https://material-foundation.github.io/material-theme-builder/
  - TopBar logo based on: https://upload.wikimedia.org/wikipedia/commons/b/b1/Rick_and_Morty.svg
  - Font: https://www.fonts4free.net/rick-and-morty-font.html
+ - Music used in the demo video: https://www.youtube.com/watch?v=Y_KNlISFQNg
