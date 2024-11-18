@@ -22,7 +22,7 @@
 - Android, Jetpack Compose
 - Kotlin, Coroutines, Flow
 - MVVM, DI with Dagger-Hilt
-- RoomDB, Coil
+- RoomDB, Retrofit, Coil
 
 ## Sources:
  - API: https://rickandmortyapi.com/
